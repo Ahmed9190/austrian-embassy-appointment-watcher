@@ -486,21 +486,17 @@ async function checkAppointments() {
         `🔗 [Book Now](https://appointment.bmeia.gv.at/)`;
 
       console.log('Earlier appointment found. Sending notifications...');
-      // Send notifications
-      await sendMessage(message); // Telegram
-      await sendEmailNotification("Earlier Appointment Found!", message); // Email
-      await sendPushNotification("Earlier Appointment Found!", `New appointment available on ${earliestFoundAppointment.fullDate.format('YYYY-MM-DD')} at ${earliestFoundAppointment.time}`); // Pushbullet
+      await sendMessage(message);
+      await sendEmailNotification("Earlier Appointment Found!", message);
+      await sendPushNotification("Earlier Appointment Found!", `New appointment available on ${earliestFoundAppointment.fullDate.format('YYYY-MM-DD')} at ${earliestFoundAppointment.time}`);
 
-      // Log the earlier appointment but DO NOT update state.currentAppointment or save to file
       console.log(`Found earlier appointment: ${earliestFoundAppointment.fullDate.format('YYYY-MM-DD')} (Your set appointment: ${state.currentAppointment.fullDate.format('YYYY-MM-DD')})`);
-      return true; // Indicate an earlier appointment was found and notified
+      return true;
 
     } else {
-      // --- MODIFICATION START ---
-      // Only send notification at hh:00 or hh:30
       const now = new Date();
       const minutes = now.getMinutes();
-      
+
       if (minutes === 0 || minutes === 30) {
         const userApptDateStr = state.currentAppointment.fullDate.format('YYYY-MM-DD');
         const earliestAvailableDateStr = earliestFoundAppointment.fullDate.format('dddd, MMMM Do, YYYY');
@@ -514,8 +510,8 @@ async function checkAppointments() {
       } else {
         console.log(`No earlier appointments found. Skipping notification (current time: ${now.getHours()}:${minutes})`);
       }
-      // --- MODIFICATION END ---
-      return false; // Indicate no earlier appointment was found
+
+      return false;
     }
 
   } catch (error) {
