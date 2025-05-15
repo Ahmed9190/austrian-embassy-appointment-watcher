@@ -497,15 +497,23 @@ async function checkAppointments() {
 
     } else {
       // --- MODIFICATION START ---
-      const userApptDateStr = state.currentAppointment.fullDate.format('YYYY-MM-DD');
-      const earliestAvailableDateStr = earliestFoundAppointment.fullDate.format('dddd, MMMM Do, YYYY');
-      const earliestAvailableTimeStr = earliestFoundAppointment.time;
+      // Only send notification at hh:00 or hh:30
+      const now = new Date();
+      const minutes = now.getMinutes();
+      
+      if (minutes === 0 || minutes === 30) {
+        const userApptDateStr = state.currentAppointment.fullDate.format('YYYY-MM-DD');
+        const earliestAvailableDateStr = earliestFoundAppointment.fullDate.format('dddd, MMMM Do, YYYY');
+        const earliestAvailableTimeStr = earliestFoundAppointment.time;
 
-      const notificationMessage = `ℹ️ No appointments found earlier than your set date of *${userApptDateStr}*.\n\n` +
-        `The earliest appointment currently available on the website is on *${earliestAvailableDateStr}* at *${earliestAvailableTimeStr}*.`;
+        const notificationMessage = `ℹ️ No appointments found earlier than your set date of *${userApptDateStr}*.\n\n` +
+          `The earliest appointment currently available on the website is on *${earliestAvailableDateStr}* at *${earliestAvailableTimeStr}*.`;
 
-      await sendMessage(notificationMessage);
-      console.log(`No earlier appointments found than your set appointment (${userApptDateStr}). Notified user.`);
+        await sendMessage(notificationMessage);
+        console.log(`No earlier appointments found than your set appointment (${userApptDateStr}). Notified user.`);
+      } else {
+        console.log(`No earlier appointments found. Skipping notification (current time: ${now.getHours()}:${minutes})`);
+      }
       // --- MODIFICATION END ---
       return false; // Indicate no earlier appointment was found
     }
