@@ -1,5 +1,6 @@
 # Use a lightweight Node.js image
-FROM node:23.11.0-alpine3.19
+FROM node:24.0.1-alpine3.21
+
 
 # Install any system dependencies needed for Node.js
 RUN apk --no-cache add \
